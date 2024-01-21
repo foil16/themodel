@@ -93,6 +93,7 @@ def image_detect(img_path):
 	blob, outputs = detect_objects(image, model, output_layers)
 	boxes, confs, class_ids = get_box_dimensions(outputs, height, width)
 	draw_labels(boxes, confs, colors, class_ids, classes, image)
+	cv2.imwrite('processed_image.jpg',image)
 	_, encoded_image = cv2.imencode('.jpg', image)
 	return encoded_image
 

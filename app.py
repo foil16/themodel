@@ -1,4 +1,4 @@
-from flask import Flask, request, make_response, send_file
+from flask import Flask, request, make_response, send_file, jsonify
 from flask_cors import CORS
 import os
 from werkzeug.utils import secure_filename
@@ -28,17 +28,18 @@ def process_image():
     print("\n\n\n")
     print(type(file))
     print(file)
-    filename = secure_filename(f'{uuid.uuid4()}.png')
+    filename = secure_filename(f'{uuid.uuid4()}.jpg')
     print(filename)
     save_path = os.path.join(app.config['uploaded_images'], filename)
     file.save(save_path)
     image = image_detect(save_path)
-    _, buffer = cv2.imencode('.jpg', image)
-    jpg_as_text = base64.b64encode(buffer).decode()
-    response = make_response(f'File saved to {save_path}', 200)
-    response.headers['Access-Control-Allow-Origin'] = '*'
+    
+    path = "processed_image.jpg"
+    
+    # response = make_response(f'File saved to {save_path}', 200)
+    # response.headers['Access-Control-Allow-Origin'] = '*'
     try:
-        return jpg_as_text
+        return send_file(path,mimetype="image/jpeg")
     finally:
         os.remove(save_path)
     
