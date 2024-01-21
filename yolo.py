@@ -75,6 +75,7 @@ def get_box_dimensions(outputs, height, width):
 	return boxes, confs, class_ids
 			
 def draw_labels(boxes, confs, colors, class_ids, classes, img): 
+	detected_objects = []
 	indexes = cv2.dnn.NMSBoxes(boxes, confs, 0.5, 0.4)
 	font = cv2.FONT_HERSHEY_PLAIN
 	for i in range(len(boxes)):
@@ -84,7 +85,9 @@ def draw_labels(boxes, confs, colors, class_ids, classes, img):
 			color = colors[i]
 			cv2.rectangle(img, (x,y), (x+w, y+h), color, 2)
 			cv2.putText(img, label, (x, y - 5), font, 1, color, 1)
+			detected_objects.append((label,confidence, (x,y,w,h)))
 	img=cv2.resize(img, (800,600))
+	return detected_objects
 	# cv2.imshow("Image", img)
 
 def image_detect(img_path): 
@@ -92,10 +95,10 @@ def image_detect(img_path):
 	image, height, width, channels = load_image(img_path)
 	blob, outputs = detect_objects(image, model, output_layers)
 	boxes, confs, class_ids = get_box_dimensions(outputs, height, width)
-	draw_labels(boxes, confs, colors, class_ids, classes, image)
+	detected_objects = draw_labels(boxes, confs, colors, class_ids, classes, image)
 	cv2.imwrite('processed_image.jpg',image)
 	_, encoded_image = cv2.imencode('.jpg', image)
-	return encoded_image
+	return encoded_image, detected_objects
 
 def webcam_detect():
 	model, classes, colors, output_layers = load_yolo()
