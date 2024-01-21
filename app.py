@@ -41,10 +41,10 @@ def process_image():
     response = make_response(send_file('processed_image.jpg', mimetype='image/jpeg'))
     print(len(detected))
     if len(detected) == 0:
-        response.headers['X-Custom-Header'] = "Nothing"
+        response.headers['type'] = "Nothing"
     else: 
         print(detected[0])
-        response.headers['X-Custom-Header'] = detected[0]
+        response.headers['type'] = detected[0]
 
     try:
         return send_file(path,mimetype="image/jpeg")
