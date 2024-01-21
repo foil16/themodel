@@ -8,7 +8,7 @@ import cv2
 import base64
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)  # Enable CORS for the whole app
+CORS(app, supports_credentials=True)
 
 counter = 0
 
@@ -25,19 +25,27 @@ def process_image():
         return 'No file part', 400
 
     file = request.files['frame']
-    print("\n\n\n")
-    print(type(file))
-    print(file)
+   
     filename = secure_filename(f'{uuid.uuid4()}.jpg')
-    print(filename)
+ 
     save_path = os.path.join(app.config['uploaded_images'], filename)
     file.save(save_path)
-    image = image_detect(save_path)
+    image, detected = image_detect(save_path)
     
     path = "processed_image.jpg"
     
     # response = make_response(f'File saved to {save_path}', 200)
     # response.headers['Access-Control-Allow-Origin'] = '*'
+    # print(detected[0].label)
+    print(detected)
+    response = make_response(send_file('processed_image.jpg', mimetype='image/jpeg'))
+    print(len(detected))
+    if len(detected) == 0:
+        response.headers['X-Custom-Header'] = "Nothing"
+    else: 
+        print(detected[0])
+        response.headers['X-Custom-Header'] = detected[0]
+
     try:
         return send_file(path,mimetype="image/jpeg")
     finally:
