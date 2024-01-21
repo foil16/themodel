@@ -8,7 +8,7 @@ import cv2
 import base64
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+CORS(app, expose_headers=["type"])
 
 counter = 0
 
@@ -37,9 +37,13 @@ def process_image():
     # response = make_response(f'File saved to {save_path}', 200)
     # response.headers['Access-Control-Allow-Origin'] = '*'
     # print(detected[0].label)
+    
     print(detected)
+
     response = make_response(send_file('processed_image.jpg', mimetype='image/jpeg'))
+    
     print(len(detected))
+    
     if len(detected) == 0:
         response.headers['type'] = "Nothing"
     else: 
@@ -47,9 +51,10 @@ def process_image():
         response.headers['type'] = detected[0]
 
     try:
-        return send_file(path,mimetype="image/jpeg")
+        return response
     finally:
         os.remove(save_path)
+    
     
     
     
