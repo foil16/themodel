@@ -85,7 +85,7 @@ def draw_labels(boxes, confs, colors, class_ids, classes, img):
 			cv2.rectangle(img, (x,y), (x+w, y+h), color, 2)
 			cv2.putText(img, label, (x, y - 5), font, 1, color, 1)
 	img=cv2.resize(img, (800,600))
-	cv2.imshow("Image", img)
+	# cv2.imshow("Image", img)
 
 def image_detect(img_path): 
 	model, classes, colors, output_layers = load_yolo()
@@ -93,8 +93,8 @@ def image_detect(img_path):
 	blob, outputs = detect_objects(image, model, output_layers)
 	boxes, confs, class_ids = get_box_dimensions(outputs, height, width)
 	draw_labels(boxes, confs, colors, class_ids, classes, image)
-	image = cv2.resize(image,(800,600))
-	return image
+	_, encoded_image = cv2.imencode('.jpg', image)
+	return encoded_image
 
 def webcam_detect():
 	model, classes, colors, output_layers = load_yolo()

@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 import uuid
 from yolo import image_detect
 import cv2
+import base64
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)  # Enable CORS for the whole app
@@ -31,12 +32,13 @@ def process_image():
     print(filename)
     save_path = os.path.join(app.config['uploaded_images'], filename)
     file.save(save_path)
-    file = image_detect(save_path)
-    cv2.imwrite(save_path,file)
+    image = image_detect(save_path)
+    _, buffer = cv2.imencode('.jpg', image)
+    jpg_as_text = base64.b64encode(buffer).decode()
     response = make_response(f'File saved to {save_path}', 200)
     response.headers['Access-Control-Allow-Origin'] = '*'
     try:
-        return send_file(save_path,'image/jpg')
+        return jpg_as_text
     finally:
         os.remove(save_path)
     
