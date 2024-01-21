@@ -85,7 +85,7 @@ def draw_labels(boxes, confs, colors, class_ids, classes, img):
 			color = colors[i]
 			cv2.rectangle(img, (x,y), (x+w, y+h), color, 2)
 			cv2.putText(img, label, (x, y - 5), font, 1, color, 1)
-			detected_objects.append((label,confidence, (x,y,w,h)))
+			detected_objects.append(label)
 	img=cv2.resize(img, (800,600))
 	return detected_objects
 	# cv2.imshow("Image", img)
