@@ -93,10 +93,8 @@ def image_detect(img_path):
 	blob, outputs = detect_objects(image, model, output_layers)
 	boxes, confs, class_ids = get_box_dimensions(outputs, height, width)
 	draw_labels(boxes, confs, colors, class_ids, classes, image)
-	while True:
-		key = cv2.waitKey(1)
-		if key == 27:
-			break
+	image = cv2.resize(image,(800,600))
+	return image
 
 def webcam_detect():
 	model, classes, colors, output_layers = load_yolo()
